@@ -1,0 +1,190 @@
+
+<!--index.html -->
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <title>Balloon Pop Master</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="icon" href="favicon.webp" type="image/webp">
+        <!-- Вместо него в самом верху head (для мобильных) -->
+        <script src="cordova.js"></script>
+
+    </head>
+
+    <!--Отвечает за загрузку-->
+    <body>
+        <div id="portrait-warning">
+            <div class="warning-content">
+                <img src="phone.webp" alt="Rotate" id="rotate-icon">
+                <p>PLEASE ROTATE YOUR DEVICE TO PORTRAIT MODE</p>
+            </div>
+        </div>
+
+        <div id="game-container-loder">
+            <div id="loader-screen">
+                <img src="logotype.webp" id="loader-logo" alt="Balloon Pop Master">
+                <div class="spinner"></div> <div class="progress-container">
+                    <div id="progress-bar"></div>
+            </div>
+            
+        </div>
+
+        <div id="game-container-menu">
+            <div id="Menu-screen">
+                <img src="logotype.webp" id="Menu-logo" alt="Balloon Pop Master">
+        
+                <div id="settings-container">
+                    <img src="music_on.webp" id="music-toggle-btn" class="settings-btn" alt="Music">
+                    <img src="sound_on.webp" id="sound-toggle-btn" class="settings-btn" alt="Sound">
+                </div>
+
+                <div class="button-scale-container">
+                    <button id="play-button">PLAY</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="loder.js"></script>
+        <script src="menu.js"></script>
+    
+        
+        <!--Отвечает за звуки-->
+        <script src="music.js"></script>
+        <script src="sound.js"></script>
+        <script src="AllSoundlogig.js"></script>
+        
+          
+        <!--sdk для gamemonetize-->
+        <!--<script type="text/javascript">
+            window.SDK_OPTIONS = {
+                gameId: "kapfvra3zri06z6ohm6wm92s9yiwtpbi",
+                onEvent: function (a) { 
+                    switch (a.name) {
+                         
+                        case "SDK_GAME_PAUSE":
+                            window.gameMusic.pauseForAd();       
+                            window.gameSounds.stopAll();
+                            // Всегда прячем игровой интерфейс на время рекламы
+                            document.getElementById('game-ui-top').style.display = 'none';
+                            // Если показан оверлей проигрыша — прячем его на время рекламы
+                            var overlay = document.getElementById('game-over-overlay');
+                            if (overlay && overlay.style.display === 'flex') {
+                                overlay.style.display = 'none';
+                                window.pendingAfterAd = 'gameover';
+                            }
+                            break;
+
+                        case "SDK_GAME_START":
+                            setTimeout(() => {
+                                window.gameMusic.resumeAfterAd();
+                                window.gameSounds.resumeAll();
+                                //clearTimeout(window.adSafetyTimeout); // Отменяем таймер, так как всё сработало штатно            
+                                // разблокирую кнопки
+                                onAdFinished();
+                                // Возвращаем игровой интерфейс
+                                document.getElementById('game-ui-top').style.display = 'flex';
+                                // Выполняем отложенное действие после рекламы
+                                var pending = window.pendingAfterAd;
+                                window.pendingAfterAd = null;
+                                if (pending === 'gameover') {
+                                    document.getElementById('game-over-overlay').style.display = 'flex';
+                                } else if (pending === 'retry') {
+                                    startGame();
+                                } else if (pending === 'menu') {
+                                    document.getElementById('back-to-menu-btn').click();
+                                }
+                            }, 100);
+                            break;
+                        case "SDK_READY":
+                            console.log("SDK is ready");
+                            break;
+                    }
+                }
+            };
+             
+            (function (a, b, c) {
+                var d = a.getElementsByTagName(b)[0];
+                a.getElementById(c) || (a = a.createElement(b), 
+                a.id = c, a.src = "https://api.gamemonetize.com/sdk.js", 
+                d.parentNode.insertBefore(a, d)) 
+            })(document, "script", "gamemonetize-sdk"); 
+        </script>-->
+       
+
+       <!--игровой контейнер-->
+       <div id="game-container-game">
+            <div id="game-ui-top">
+                <div id="back-to-menu-container">
+                    <img src="holme.webp" id="back-to-menu-btn" alt="Menu"> 
+                </div>
+        
+                <div id="lives-container">
+                    <img src="1.webp" class="heart" id="heart-1">
+                    <img src="1.webp" class="heart" id="heart-2">
+                    <img src="1.webp" class="heart" id="heart-3">
+                </div>
+
+                 
+                <div id="score-container">
+                    <span id="score-label">SCORE:</span>
+                    <span class="score-3d-wrapper">
+                        <span id="score-value">0</span>
+                    </span>
+                </div>
+
+            </div>
+
+            <div id="Game-screen"></div>
+        </div>
+        
+        <!--окно проигроша-->
+        <div id="game-over-overlay">
+            <div id="game-over-box">
+                <h2 id="game-over-title">GAME OVER</h2>
+                <p id="final-score-text">SCORE: <span id="final-score-value">0</span></p>
+        
+                <div id="game-over-buttons">
+                    <button id="retry-btn" class="ui-btn">AGAIN</button>
+                    <button id="menu-btn" class="ui-btn">MENU</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="game.js"></script>
+ 
+        
+        
+        </body>
+</html>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

@@ -1,0 +1,697 @@
+
+/*делаем игру в портретнем режыме всегда*/
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1362a299; /* Цвет "ушей" (краев) на ПК */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+
+    /* Запрещаем прокрутку */
+    overflow: hidden; 
+    /* Отключаем жесты обновления страницы (тянуть вниз) */
+    overscroll-behavior: none;
+    /* Убираем выделение текста при кликах */
+    user-select: none;
+    -webkit-user-select: none;
+    /* Отключаем стандартные экранные меню при долгом нажатии */
+    -webkit-touch-callout: none;
+}
+
+#game-container-game {
+    /* Фиксируем игровой контейнер */
+    touch-action: none; 
+}
+
+
+
+
+/* екран загрузки */
+#game-container-loder {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* Соотношение сторон 9:16 (типичный портрет) */
+    aspect-ratio: 9 / 16; 
+    /* Ограничиваем ширину на больших экранах */
+    max-width: 750px; /* Можешь поменять на 450px или 600px */
+    max-height: 100vh;
+    background-color: #1362a299; /* Фон самой игры */
+    box-shadow: 0 0 50px rgba(2, 23, 125, 0.789); /* Тень для красоты на ПК */
+}
+
+/* Если внутри есть canvas, растягиваем его на весь контейнер */
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+/*логотип вместе с загрузкой*/
+#loader-screen {
+    /* ... твои старые стили (background, flex и т.д.) ... */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#loader-logo {
+    width: 80%; /* Размер логотипа относительно ширины игры */
+    max-width: 350px;
+    height: auto;
+    margin-bottom: 20px; /* Отступ между лого и полоской */
+    
+    /* Анимация легкого покачивания, как будто шарики парят */
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Эффект парения для логотипа */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.progress-container {
+    width: 70%; /* Сделаем полоску чуть короче логотипа для красоты */
+    height: 15px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/*стили для загрузки */
+#loader-screen {
+    position: absolute; /* Изменено с fixed на absolute */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('loder.webp') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    /* Округлим углы, если у контейнера они есть */
+    border-radius: inherit; 
+}
+
+/* Это важно, чтобы псевдоэлемент тоже не вылезал за границы */
+#loader-screen::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+    border-radius: inherit;
+}
+
+/* Контейнер полоски (серая подложка) */
+.progress-container {
+    width: 60%; /* Полоска будет занимать 80% ширины экрана игры */
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.415); /* Полупрозрачный фон */
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.547);
+}
+
+/* Сама заполняющаяся часть (фиолетовая) */
+#progress-bar {
+    width: 0%; /* Начинаем с нуля */
+    height: 100%;
+    background: linear-gradient(90deg, #8e44ad, #a29bfe); /* Красивый градиент фиолетового */
+    box-shadow: 0 0 10px #9b59b6; /* Свечение */
+    transition: width 0.2s ease-out; /* Плавное движение */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* стили для меню*/
+#game-container-menu {
+    display: none; /* Скрываем меню изначально */
+    position: relative;
+    width: 100%;
+    height: 100%;
+   
+    
+    /* Соотношение сторон 9:16 (типичный портрет) */
+    aspect-ratio: 9 / 16; 
+    
+    /* Ограничиваем ширину на больших экранах */
+    max-width: 750px; /* Можешь поменять на 450px или 600px */
+    max-height: 100vh;
+    
+    background-color: #1362a299; /* Фон самой игры */
+    box-shadow: 0 0 50px rgba(0, 3, 18, 0.36); /* Тень для красоты на ПК */
+
+    /* Добавь это: */
+    background-image: url('fone.webp'); /* Путь к твоему файлу */
+    background-size: cover;    /* Растянуть на весь контейнер */
+    background-repeat: no-repeat;
+    background-position: center bottom; /* По центру и прижать к низу */
+    
+}
+
+
+/* Если внутри есть canvas, растягиваем его на весь контейнер */
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+
+/*логотип в меню*/
+#Menu-screen {
+    position: absolute; /* Чтобы он перекрывал фон контейнера */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Центр по вертикали (Y) */
+    align-items: center;     /* Центр по горизонтали (X) */
+    
+    z-index: 10;
+}
+
+ 
+
+/* (Опционально) Уберем черный фон с других элементов, чтобы небо было видно */
+#Menu-screen {
+    /* position, align-items, justify-content ... */
+    background-color: transparent; /* Убери любой плотный фон */
+}
+
+
+#Menu-logo {
+    width: 80%; /* Размер логотипа относительно ширины игры */
+    max-width: 350px;
+    height: auto;
+
+    margin-bottom: 5vh;
+
+    /* Анимация легкого покачивания, как будто шарики парят */
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Эффект парения для логотипа */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+
+
+
+
+/*звук */
+#settings-container {
+    display: flex;
+    justify-content: center; /* Центрируем в ряд */
+    align-items: center;
+    gap: 20px; /* Расстояние между кнопками */
+    margin: 20px 0; /* Отступы сверху и снизу */
+}
+
+.settings-btn {
+    width: 60px; /* Размер иконок */
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+     /* Анимация легкого покачивания, как будто шарики парят */
+    animation: float 2.5s ease-in-out infinite;
+}
+
+.settings-btn:active {
+    transform: scale(0.9); /* Эффект нажатия */
+}
+
+/* Специфические стили для Menu-screen, чтобы всё выровнялось */
+#Menu-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+
+
+
+/*кнопка меню*/
+
+/* Оставь только это для плавности смены картинок */
+#play-button {
+    background-image: url('play.webp');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: transparent; /* Скрываем текст "PLAY" внутри тега, т.к. он есть на картинке */
+    width: 300px;
+    height: 100px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition: transform 0.1s; /* Только трансформ, без opacity */
+}
+
+/* Эти классы должны быть ниже основного #play-button */
+#play-button.popping-p {
+    background-image: url('play2.webp') !important;
+    animation: none !important;
+    transform: scale(0.98);
+}
+
+#play-button.popping-pl {
+    background-image: url('play3.webp') !important;
+    animation: none !important;
+    transform: scale(0.95);
+}
+
+/* 3. Лопаются P, L и A (play4.webp) */
+#play-button.popping-pla {
+    background-image: url('play4.webp') !important;
+    transform: scale(0.93);
+    animation: none !important;
+}
+
+/* 4. Все буквы лопнули (play5.webp) */
+#play-button.popping-all {
+    background-image: url('play5.webp') !important;
+    transform: scale(0.9) translateY(5px);
+    animation: none !important;
+}
+
+/* СТИЛИ ДЛЯ НОВОГО КОНТЕЙНЕРА (эффект наведения) */
+.button-scale-container {
+    transition: transform 0.2s ease-out; /* Плавность наведения */
+    display: inline-block; /* Чтобы размер был по кнопке */
+}
+
+/* Когда мы наводим на КОНТЕЙНЕР, кнопка внутри увеличивается */
+.button-scale-container:hover {
+    transform: scale(1.05); /* Кнопка становится больше */
+}
+
+/* Эффект при наведении - принудительно перекрываем анимацию */
+#play-button:hover {
+    transform: scale(1.05) !important;
+} 
+
+ 
+
+#play-button {
+    /* Анимация легкого покачивания, как будто шарики парят */
+    animation: float 2.8s ease-in-out infinite;
+     
+}
+
+
+ 
+
+
+
+
+
+
+
+/*игра*/
+#game-container-game {
+    display: none; /* Скрываем меню изначально */
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    /* Убедись, что ширина ограничена так же, как в меню */
+    width: 100%;
+    max-width: 750px; 
+    height: 100vh;
+    margin: 0 auto; /* Центрируем игру на ПК */
+    background-image: url('fone.webp'); 
+    background-size: cover;
+}
+
+/*сарики */
+.balloon {
+    position: absolute;
+    /* Теперь берем % от ширины контейнера (750px), а не экрана */
+    width: 18%; 
+    /* Чтобы сохранить пропорции (раньше было 24vw при 18vw), 
+       считаем: 18 * 1.33 = 24. Поэтому ставим аспект или высоту в % */
+    aspect-ratio: 3 / 4; 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    touch-action: manipulation;
+    z-index: 10;
+     
+}
+
+/*кнопка выхода в меню*/
+#back-to-menu-container {
+    position: absolute;
+    top: 10px;          /* Отступ от верхнего края */
+    left: 50%;          /* В центр по горизонтали */
+    transform: translateX(-50%); /* Точное выравнивание по центру */
+    z-index: 100;       /* Чтобы кнопка была поверх шариков */
+    cursor: pointer;
+}
+
+#back-to-menu-btn {
+    width: 60px;        /* Размер кнопки (подбери под свою картинку) */
+    height: auto;
+    filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); /* Тень для объема */
+    transition: transform 0.1s;
+}
+
+#back-to-menu-btn:active {
+    transform: scale(0.9); /* Эффект нажатия */
+}
+
+
+#back-to-menu-btn {
+    /* Анимация легкого покачивания, как будто шарики парят */
+    animation: float 3s ease-in-out infinite;
+}
+
+
+
+
+
+
+
+
+/*счеты игрока*/
+#game-ui-top {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    width: 100%;
+    /* Flexbox — наш главный помощник */
+    display: flex; 
+    flex-direction: row;    /* Выстроить в ряд */
+    justify-content: center; /* Центрировать всю группу */
+    align-items: center;     /* Выровнять по вертикали */
+    gap: 15px;               /* Расстояние между счетом и домиком */
+    z-index: 100;
+    pointer-events: none;
+}
+
+#score-container {
+    background: rgba(208, 181, 6, 0.95); /* Чуть плотнее цвет */
+    padding: 8px 20px;
+    border-radius: 25px;
+    border: 3px solid #b10811;
+    font-family: 'Arial Black', Gadget, sans-serif; /* Более жирный шрифт */
+    display: flex;       
+    align-items: center;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Тень помягче, без синего */
+    animation: float 2.9s ease-in-out infinite;
+}
+
+#score-label {
+    color: #4b0408; /* Темно-красный для текста "SCORE" */
+    margin-right: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#score-value {
+    /* ЦВЕТ: Сделаем ярко-розовым или белым с градиентом */
+    color: #fff; 
+    font-size: 20px;
+    font-weight: 900;
+    
+    /* Эффект надутых букв через тени */
+    text-shadow: 
+        2px 2px 0px #b10811,  /* Контур цвета рамки */
+        -1px -1px 0px #b10811,
+        1px -1px 0px #b10811,
+        -1px 1px 0px #b10811,
+        0px 4px 5px rgba(0,0,0,0.4); /* Тень под цифрой */
+    
+    /* Добавляем легкое свечение */
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+#score-container, #back-to-menu-container {
+    pointer-events: auto;
+    position: relative; 
+    top: 0;
+    left: 0;
+    transform: none; 
+}
+ 
+#back-to-menu-btn {
+    width: 55px;         /* Немного уменьшим, чтобы гармонировало со счетом */
+    height: auto;
+    display: block;      /* Убирает лишние отступы снизу */
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+#back-to-menu-btn:hover {
+    transform: scale(1.1);
+}
+
+
+
+
+
+
+
+/*жыжни */
+#lives-container {
+    display: flex;
+    gap: 5px;
+    pointer-events: auto;
+}
+
+.heart {
+    width: 30px; /* Размер сердечек */
+    height: auto;
+    transition: transform 0.3s, opacity 0.3s;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    /* Анимация легкого покачивания, как будто шарики парят */
+    animation: float 2.8s ease-in-out infinite;
+     
+}
+ 
+    
+
+/* Класс для исчезновения жизни */
+.heart.lost {
+    opacity: 0;
+    transform: scale(0);
+}
+
+
+
+
+ 
+
+
+
+/*окно проигроша*/
+#game-over-overlay {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Чуть сильнее затемним фон, чтобы окно выделялось */
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px); /* Усилили размытие для красоты */
+}
+
+#game-over-box {
+    background: linear-gradient(180deg, #fceb6a 0%, #d0b506 100%); /* Золотой градиент */
+    padding: 40px;
+    border-radius: 40px;
+    border: 6px solid #b10811; /* Красная рамка как у счета */
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); /* Глубокая тень */
+    min-width: 300px;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Плавное появление */
+    /* Анимация легкого покачивания, как будто шарики парят */
+    animation: float 2.8s ease-in-out infinite;
+}
+
+#game-over-title {
+    color: #fff;
+    font-size: 38px;
+    margin-bottom: 15px;
+    font-family: 'Arial Black', sans-serif;
+    /* Надутые буквы для заголовка */
+    text-shadow: 
+        3px 3px 0px #b10811, 
+        -1px -1px 0px #b10811,
+        1px -1px 0px #b10811,
+        -1px 1px 0px #b10811,
+        0px 6px 10px rgba(0,0,0,0.3);
+}
+
+#final-score-text {
+    font-size: 26px;
+    color: #4b0408;
+    font-family: 'Arial Black', sans-serif;
+    margin-bottom: 30px;
+}
+
+#final-score-value {
+    color: #fff;
+    font-size: 32px;
+    /* Такая же красивая цифра, как в игре */
+    text-shadow: 
+        2px 2px 0px #b10811,
+        0px 4px 6px rgba(0,0,0,0.3);
+}
+
+#game-over-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.ui-btn {
+    padding: 15px;
+    font-size: 20px;
+    font-weight: 900;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Arial Black', sans-serif;
+    transition: all 0.2s;
+    box-shadow: 0 5px 0px rgba(0,0,0,0.2); /* Эффект толстой кнопки */
+}
+
+#retry-btn {
+    background: #e62c32; /* Ярко-красный */
+    color: white;
+}
+
+#menu-btn {
+    background: #0815d2; /* Синий */
+    color: white;
+}
+
+.ui-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0px rgba(0,0,0,0.2);
+}
+
+.ui-btn:active {
+    transform: translateY(3px); /* Кнопка нажимается вниз */
+    box-shadow: 0 2px 0px rgba(0,0,0,0.2);
+}
+
+/* Анимация появления окошка */
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*отвечает за стили поворота екрана*/
+/* Отвечает за стили поворота экрана */
+#portrait-warning {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Используем такой же золотой градиент, как в окне Game Over */
+    background: linear-gradient(180deg, #fceb6a 0%, #d0b506 100%);
+    z-index: 9999; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: 'Arial Black', sans-serif;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+#portrait-warning p {
+    color: #fff;
+    font-size: 24px;
+    max-width: 80%;
+    line-height: 1.4;
+    /* Надутый текст в стиле игры */
+    text-shadow: 
+        3px 3px 0px #b10811, 
+        -1px -1px 0px #b10811,
+        1px -1px 0px #b10811,
+        -1px 1px 0px #b10811,
+        0px 6px 10px rgba(0,0,0,0.3);
+}
+
+#rotate-icon {
+    width: 120px; /* Сделаем иконку покрупнее */
+    height: auto;
+    margin-bottom: 30px;
+    /* Белое свечение вокруг иконки */
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+    animation: rotateAnim 2s infinite ease-in-out;
+}
+
+@keyframes rotateAnim {
+    0% { transform: rotate(0deg); }
+    30% { transform: rotate(-90deg); } /* Быстрый поворот */
+    70% { transform: rotate(-90deg); } /* Пауза, чтобы игрок понял */
+    100% { transform: rotate(0deg); }
+}
+
+ 
+/* МАГИЯ: Показываем ТОЛЬКО на мобильных устройствах с тачскрином и ТОЛЬКО в ландшафте */
+@media screen and (max-width: 950px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
+    #portrait-warning {
+        display: flex;
+    }
+}  
